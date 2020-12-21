@@ -1,0 +1,120 @@
+@startuml Game_PublicView_v3_0_0
+
+title Game_PublicView v3.0.0
+
+class Mastermind{
+	
+	}
+package models{
+
+	
+	class Game {
+	    +Game()
+	    +play() : void
+	}
+	
+	
+	class Attempt{
+	    +Attempt(SecretCombination)
+	    +isWinner() : boolean
+	    +toString() : String
+	}
+	
+	
+	class Result{
+	    +Result(whites: int, blacks: int)
+	    +isWinner() : boolean
+	    +toSring() : String
+	}
+	
+	enum Color{
+	    RED('r')
+	    GREEN('g')
+	    BLUE ('b')
+	    YELLOW('y')
+	    ORANGE('o')
+	    PINK('p')
+	    +{static} getAvailableColors() : String
+	    +{static} getColorByChar(char) : Color
+	    +isSameColorAs(color : Color) : bool
+	    +toString() : String
+	}
+	
+	abstract class Combination{
+	    +toString() : String
+	}
+	
+	class SecretCombination{
+	    +SecretCombination()
+	    +evalueCombination(ProposedCombination) : Result
+	    +toString() : String
+	}
+	
+	class ProposedCombination{
+	    +ProposedCombination()
+	    +read(): void
+	}
+
+}
+
+package Utils{
+	class Console{
+	    +write(promptMessage : String) : void
+	    +read(promptMessage : String) : String
+	}
+}
+
+package views{
+	class View{
+		+View(Game)
+	}
+	
+	class ViewGame{
+		+View(Game)
+		+interact():void
+	}
+	
+	class StartView{
+		+show() : void
+	}
+	
+	class ResumeView{
+		+isResume() : boolean
+	}
+	
+	class AttemptsView{
+		+AttemptsView(Game)
+		+show():void
+	}
+	
+	class ProposedCombinationView{
+		+read():String
+	}
+
+}
+
+Mastermind *--> Game
+Mastermind *--> ViewGame
+View <|-- ViewGame
+View <|-- AttemptsView
+View*--> Game 
+ViewGame *--> StartView
+ViewGame *--> ResumeView 
+ViewGame *--> AttemptsView 
+ViewGame *--> ProposedCombinationView 
+
+Game *--> SecretCombination
+Game *--> "0..10" Attempt
+
+Combination ^-- SecretCombination
+Combination ^-- ProposedCombination
+Combination *--> "4" Color
+SecretCombination..>ProposedCombination
+Attempt *--> ProposedCombination
+Attempt *--> Result
+Attempt ..> SecretCombination
+
+views ..> Console
+
+
+@enduml
